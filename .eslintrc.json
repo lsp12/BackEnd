@@ -44,7 +44,7 @@
             "error",
             "ignorePackages",
             {
-                "ts": "never",
+                "ts": "never"
             }
         ],
         "no-shadow": "error",
