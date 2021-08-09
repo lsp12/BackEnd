@@ -1,6 +1,5 @@
 import mongoose, { ConnectOptions } from "mongoose";
-
-const MONGO_URI= process.env.MONGO_URI || "mongodb://localhost/socialNetworkAPI";
+import { MONGO_URI } from "./Url";
 
 export const socialNetworkAPI = async ()=>{
     try {
@@ -10,8 +9,8 @@ export const socialNetworkAPI = async ()=>{
             useFindAndModify: false,
         }
 
-        const connectio = await mongoose.connect(MONGO_URI, mongoOption);
-        console.log("Connected to database");
+        const db = await mongoose.connect(MONGO_URI, mongoOption);
+        console.log("Connected to database", db.connection.name);
     } catch (error) {
         console.log("Error connecting to database",error);
     }
