@@ -1,7 +1,7 @@
 import mongoose, { ConnectOptions } from 'mongoose';
 import { MONGO_URI } from './Url';
 
-export const socialNetworkAPI = async () => {
+export const dataBase = async () => {
   try {
     const mongoOption: ConnectOptions = {
       useUnifiedTopology: true,
