@@ -32,6 +32,6 @@
   },
   "scripts": {
     "start": "ts-node ./src/index.ts",
-    "build": "tsc -p ./src"
+    "build": "ts-node ./src/index.ts"
   }
 }
