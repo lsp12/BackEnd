@@ -1,6 +1,5 @@
 import mongoose, { ConnectOptions } from 'mongoose';
-import { MONGO_URI } from './Url';
-
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost/subcentro';
 export const dataBase = async () => {
   try {
     const mongoOption: ConnectOptions = {
