@@ -5,8 +5,7 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost/subcentro';
     const mongooseOptions: ConnectionOptions = {
       useUnifiedTopology: true,
       useNewUrlParser: true,
-      // user: config.MONGO_USER,
-      // pass: config.MONGO_PASSWORD
+      useCreateIndex: true,
     };
     const db = await mongoose.connect(MONGO_URI, mongooseOptions);
     console.log('Database is connected to', db.connection.name);
