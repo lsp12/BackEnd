@@ -1,5 +1,6 @@
 import mongoose, { ConnectionOptions } from 'mongoose';
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost/subcentro';
+import config from './config';
+
 (async () => {
   try {
     const mongooseOptions: ConnectionOptions = {
@@ -7,7 +8,7 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost/subcentro';
       useNewUrlParser: true,
       useCreateIndex: true,
     };
-    const db = await mongoose.connect(MONGO_URI, mongooseOptions);
+    const db = await mongoose.connect(config.MONGO_URI, mongooseOptions);
     console.log('Database is connected to', db.connection.name);
   } catch (err) {
     console.error(err);
