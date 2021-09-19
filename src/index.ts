@@ -1,13 +1,26 @@
 import app from './app';
 import './database';
 import { Server as WebSocket } from 'socket.io';
-import http from 'http';
+import https from 'http';
 
-const server = http.createServer(app);
-const io = new WebSocket(server);
+const server = https.createServer(app);
+const io = new WebSocket(server, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['my-custom-header'],
+    credentials: true,
+  },
+});
 
-io.on('connection', () => {
-  console.log('new connection');
+io.on('connection', socket => {
+  console.log('new connection:', socket.id);
+
+  socket.emit('ping');
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
 });
 
 server.listen(app.get('port'), () => {
