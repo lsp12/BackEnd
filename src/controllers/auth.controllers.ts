@@ -9,7 +9,7 @@ function createToken(users: IUser) {
 }
 
 export const register: RequestHandler = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, username } = req.body;
 
   try {
     if (!email || !password) {
@@ -21,12 +21,17 @@ export const register: RequestHandler = async (req, res) => {
       return res.status(400).send('Email already exists');
     }
 
-    const user: IUser = new User({ email, password });
+    let userName = await User.findOne({ username });
+    if (userName) {
+      return res.status(400).send('userName already exists');
+    }
+
+    const user: IUser = new User({ email, password, username });
 
     user.password = await user.encryptPassword(user.password);
 
     await user.save();
-    return res.status(200).send({ token: createToken(user) });
+    return res.status(200).send({ message: 'user Created' });
   } catch (error) {
     return res.status(400).send(error);
   }
@@ -45,8 +50,22 @@ export const deleteUser: RequestHandler = async (req, res) => {
 
 export const getUser: RequestHandler = async (req, res) => {
   try {
-    const user = await User.find();
-    return res.status(200).send(user);
+    const { username, password } = req.body;
+    console.log(req.body);
+
+    if (!username || !password) {
+      return res.status(400).send('Missing email or password');
+    }
+    const data = await User.findOne({ username });
+    if (!data) {
+      return res.status(400).send('User not found');
+    }
+    const validate = await data.validatePassword(password);
+    if (validate) {
+      return res.status(200).send({ token: createToken(data) });
+    } else {
+      return res.status(400).send('invalidate password');
+    }
   } catch (error) {
     return res.status(400).send(error);
   }

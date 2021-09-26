@@ -16,6 +16,6 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/api', route.userAuth);
+app.use('/api', route.allUser, route.userAuth, route.chat, route.message);
 
 export default app;

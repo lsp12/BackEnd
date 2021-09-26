@@ -1,18 +1,22 @@
 import { Schema, Document, Model, model } from 'mongoose';
 
 export interface IChats extends Document {
-  _id: string;
+  meId: string;
   userId: string;
-  contactId: string;
-  chatId: string;
 }
 
 const Chats: Schema<IChats> = new Schema(
   {
-    userId: { type: String, required: true, unique: true },
-    contactId: { type: String, required: true, unique: true },
-    chatId: { type: String, required: true },
-    time: { type: Date, default: Date.now, required: false },
+    meId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      require: true,
+    },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      require: true,
+    },
   },
   { timestamps: true, versionKey: false },
 );
