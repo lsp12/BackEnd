@@ -45,7 +45,7 @@ export const chatSocket = (io: WebSocket<DefaultEventsMap, DefaultEventsMap, Def
   const getConexion = (userId: string) => {
     return userSocket[userId];
   };
-
+  let id: any[] = [];
   io.on('connection', socket => {
     //socket connected
     console.log('new connection:', socket.id);
@@ -55,19 +55,44 @@ export const chatSocket = (io: WebSocket<DefaultEventsMap, DefaultEventsMap, Def
         saveConexion(userId, socket);
       }
 
-      io.emit('userList', userSocket);
+      io.emit('userList', { socketUser });
     });
-    socket.on('recivide', mesaje => {
-      console.log(mesaje.recivide);
+
+    socket.on('listUserCli', listUser => {
+      console.log(listUser);
+      const userConect = getConexion(listUser.idUser);
+      if (userConect) {
+        console.log(userConect.length);
+        if (userConect.length > 0) {
+          console.log(true);
+          io.emit('listUser', { listUser: true, idUser: listUser.idUser });
+        } else {
+          console.log(false);
+          io.emit('listUser', { listUser: false, idUser: listUser.idUser });
+        }
+      }
     });
 
     //send and get message
     socket.on('sendMessage', ({ message, senderId, reciveId }) => {
       console.log(message, senderId, reciveId);
       const user = getConexion(reciveId);
+      const sender = getConexion(senderId);
       if (user) {
         user.map((id: string) => {
           io.to(id).emit('reciveMessage', { message, senderId });
+        });
+        console.log('-------------mensaje enviado------------');
+        console.log(message, senderId, reciveId);
+      }
+      console.log(sender);
+      if (sender) {
+        sender.map((id: string) => {
+          if (id != socket.id) {
+            io.to(id).emit('reciveMessage', { message, senderId });
+            console.log('-------------mensaje de replica------------');
+            console.log(message, senderId, reciveId);
+          }
         });
       }
     });
@@ -96,7 +121,7 @@ export const chatSocket = (io: WebSocket<DefaultEventsMap, DefaultEventsMap, Def
           delete userSocket[socketUser[socket.id]];
         }
         // eliminar user por idSocket
-        delete socketUser[socket.id];
+
         console.log('--------------desconccion de usuario------------');
         console.log('---------------User por IdSocket---------------');
         console.log(socketUser);
@@ -108,7 +133,17 @@ export const chatSocket = (io: WebSocket<DefaultEventsMap, DefaultEventsMap, Def
         console.log(Object.keys(userSocket).length);
       }
 
-      io.emit('userList', userSocket);
+      const userConect = getConexion(socketUser[socket.id]);
+      if (!userConect) {
+        console.log(
+          '---------------este usuario se a desconectado------------',
+          socketUser[socket.id],
+        );
+        console.log(false);
+        io.emit('listUser', { listUser: false, idUser: socketUser[socket.id] });
+      }
+
+      delete socketUser[socket.id];
     });
   });
 };
