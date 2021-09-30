@@ -19,9 +19,8 @@ export const chatSocket = (io: WebSocket<DefaultEventsMap, DefaultEventsMap, Def
     }
 
     const idSocket = getConexion(userId);
-    console.log('idSocket----------------------------', idSocket.length);
+
     if (idSocket.length != 0) {
-      console.log('-------------aaaaaaa---------------', idSocket === []);
       idSocket.map((id: string) => {
         if (id != socket.id) {
           userSocket[userId].push(socket.id);
@@ -30,16 +29,6 @@ export const chatSocket = (io: WebSocket<DefaultEventsMap, DefaultEventsMap, Def
     } else {
       userSocket[userId].push(socket.id);
     }
-
-    console.log('--------------un nuevo usuario se a conectado------------');
-    console.log('---------------User por IdSocket---------------');
-    console.log(socketUser);
-
-    console.log('---------------idSocket por user---------------');
-    console.log(userSocket);
-
-    console.log('---------------Contar los usuarios conectados---------------');
-    console.log(Object.keys(userSocket).length);
   };
 
   const getConexion = (userId: string) => {
@@ -59,15 +48,11 @@ export const chatSocket = (io: WebSocket<DefaultEventsMap, DefaultEventsMap, Def
     });
 
     socket.on('listUserCli', listUser => {
-      console.log(listUser);
       const userConect = getConexion(listUser.idUser);
       if (userConect) {
-        console.log(userConect.length);
         if (userConect.length > 0) {
-          console.log(true);
           io.emit('listUser', { listUser: true, idUser: listUser.idUser });
         } else {
-          console.log(false);
           io.emit('listUser', { listUser: false, idUser: listUser.idUser });
         }
       }
@@ -75,33 +60,25 @@ export const chatSocket = (io: WebSocket<DefaultEventsMap, DefaultEventsMap, Def
 
     //send and get message
     socket.on('sendMessage', ({ message, senderId, reciveId }) => {
-      console.log(message, senderId, reciveId);
       const user = getConexion(reciveId);
       const sender = getConexion(senderId);
       if (user) {
         user.map((id: string) => {
           io.to(id).emit('reciveMessage', { message, senderId });
         });
-        console.log('-------------mensaje enviado------------');
-        console.log(message, senderId, reciveId);
       }
-      console.log(sender);
+
       if (sender) {
         sender.map((id: string) => {
           if (id != socket.id) {
             io.to(id).emit('reciveMessage', { message, senderId });
-            console.log('-------------mensaje de replica------------');
-            console.log(message, senderId, reciveId);
           }
         });
       }
     });
 
-    socket.emit('ping');
-
     //user disconnected
     socket.on('disconnect', () => {
-      console.log('user disconnected');
       // atrapamos el id del usuario por medio objeto array de idSocket
       const userId = userSocket[socketUser[socket.id]];
       let location;
@@ -121,24 +98,10 @@ export const chatSocket = (io: WebSocket<DefaultEventsMap, DefaultEventsMap, Def
           delete userSocket[socketUser[socket.id]];
         }
         // eliminar user por idSocket
-
-        console.log('--------------desconccion de usuario------------');
-        console.log('---------------User por IdSocket---------------');
-        console.log(socketUser);
-
-        console.log('---------------idSocket por user---------------');
-        console.log(userSocket);
-
-        console.log('---------------Contar los usuarios conectados---------------');
-        console.log(Object.keys(userSocket).length);
       }
 
       const userConect = getConexion(socketUser[socket.id]);
       if (!userConect) {
-        console.log(
-          '---------------este usuario se a desconectado------------',
-          socketUser[socket.id],
-        );
         console.log(false);
         io.emit('listUser', { listUser: false, idUser: socketUser[socket.id] });
       }

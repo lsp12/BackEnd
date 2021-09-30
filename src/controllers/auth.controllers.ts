@@ -51,7 +51,6 @@ export const deleteUser: RequestHandler = async (req, res) => {
 export const getUser: RequestHandler = async (req, res) => {
   try {
     const { username, password } = req.body;
-    console.log(req.body);
 
     if (!username || !password) {
       return res.status(400).send('Missing email or password');

@@ -14,7 +14,6 @@ export const saveMessage: RequestHandler = async (req, res) => {
 
 export const getMessages: RequestHandler = async (req, res) => {
   const { chatId } = req.body;
-  console.log(req.body);
   try {
     const messages = await Mensaje.find({ chatId });
     if (messages) {
