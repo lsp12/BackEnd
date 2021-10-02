@@ -60,7 +60,9 @@ export const postChatById: RequestHandler = async (req, res) => {
     }
     const chat: IChats = new Chat({ userId: user, meId: meId });
     await chat.save();
-    if (chat) {
+
+    const chat1 = chat;
+    if (chat1.data.chat) {
       const search = await Chat.findOne({ userId: user, meId: meId })
         .populate('userId')
         .populate('meId');

@@ -7,7 +7,7 @@ const initSocket = (app: Express) => {
   const server = https.createServer(app);
   const io = new WebSocket(server, {
     cors: {
-      origin: ['http://localhost:3000', 'https://netic-pgk7mtaf4-crisldev.vercel.app/'],
+      origin: ['http://localhost:3000', 'https://netic-hsb36fs5b-crisldev.vercel.app'],
       methods: ['GET', 'POST'],
       allowedHeaders: ['my-chat'],
       credentials: true,
