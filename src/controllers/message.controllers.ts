@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express';
 import Mensaje from '../model/Mensaje';
+import * as fs from 'fs';
 
 export const saveMessage: RequestHandler = async (req, res) => {
   const { chatId, sender, text } = req.body;
@@ -24,4 +25,10 @@ export const getMessages: RequestHandler = async (req, res) => {
   } catch (error) {
     return res.status(500).json(error);
   }
+};
+
+export const getNafa: RequestHandler = async (req, res) => {
+  console.log(__dirname);
+  var data = await fs.promises.readFile('../FF-BackEnd/tmp/pdf.pdf');
+  res.json({ file: data });
 };
