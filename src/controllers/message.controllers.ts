@@ -30,5 +30,5 @@ export const getMessages: RequestHandler = async (req, res) => {
 export const getNafa: RequestHandler = async (req, res) => {
   console.log(__dirname);
   var data = await fs.promises.readFile(`public/pdf.pdf`);
-  res.json({ file: data });
+  res.send(data);
 };
